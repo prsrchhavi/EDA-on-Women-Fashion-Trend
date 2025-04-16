@@ -1,0 +1,6 @@
+# Objective 7: Correlation Heatmap
+correlation_matrix = df[numeric_cols].corr()
+plt.figure(figsize=(10,6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", cbar=True, linewidths=1)
+plt.title("Correlation Heatmap of Numeric Features")
+plt.show()
