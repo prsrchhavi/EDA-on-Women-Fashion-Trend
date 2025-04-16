@@ -1,0 +1,15 @@
+#Objective 6: Comparing Prices for every units sold over a period of time
+grouped = df.groupby(df['price']).agg({
+    'units_sold': 'mean',
+    'rating_count': 'sum'
+}).reset_index()
+
+plt.figure(figsize=(10, 5))
+sns.lineplot(data=grouped, x='price', y='units_sold', marker='o', label='Average Rating')
+sns.lineplot(data=grouped, x='price', y='rating_count', marker='s', label='Total Ratings', color='orange')
+plt.title('Price VS Units sold')
+plt.xlabel('Price')
+plt.ylabel('Units Sold')
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.legend()
+plt.show()
