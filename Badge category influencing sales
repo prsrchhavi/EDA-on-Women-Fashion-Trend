@@ -1,0 +1,39 @@
+#Objective4: Badge distribution category through pie chart
+df['badge_category'] = 'No badges'
+for i in range(len(df)):
+    row = df.iloc[i]  # Get current row
+    local, quality, fast = row['badge_local_product'], row['badge_product_quality'], row['badge_fast_shipping']
+    
+    if local + quality + fast == 0:
+        df.at[i, 'badge_category'] = 'No badges'
+    elif local == 1 and quality == 0 and fast == 0:
+        df.at[i, 'badge_category'] = 'Local only'
+    elif quality == 1 and local == 0 and fast == 0:
+        df.at[i, 'badge_category'] = 'Quality only'
+    elif fast == 1 and local == 0 and quality == 0:
+        df.at[i, 'badge_category'] = 'Fast only'
+    elif local + quality == 2 and fast == 0:
+        df.at[i, 'badge_category'] = 'Local + Quality'
+    elif local + fast == 2 and quality == 0:
+        df.at[i, 'badge_category'] = 'Local + Fast'
+    elif quality + fast == 2 and local == 0:
+        df.at[i, 'badge_category'] = 'Quality + Fast'
+    elif local + quality + fast == 3:
+        df.at[i, 'badge_category'] = 'All badges'
+
+
+category_sales = df.groupby('badge_category')['units_sold'].sum().sort_values(ascending=False)# To calculate total units sold per category
+colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2', '#073B4C', '#EF476F']
+plt.figure(figsize=(10, 8))
+wedges, _ = plt.pie(category_sales, colors=colors, startangle=90, wedgeprops={'width': 0.7})
+plt.legend(
+    wedges, 
+    [f"{cat} ({sales} units, {sales/sum(category_sales):.1%})" for cat, sales in zip(category_sales.index, category_sales)],
+    title="Badge Categories",
+    loc="center left",
+    bbox_to_anchor=(1, 0.5)
+)
+
+plt.title('Units Sold by Badge Category', pad=20)
+plt.tight_layout()
+plt.show()
