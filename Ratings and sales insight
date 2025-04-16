@@ -1,0 +1,27 @@
+#Objective 2: Rating Insights
+print("\nRating Summary:")
+print(df['rating'].describe())
+
+plt.figure(figsize=(8,5))
+sns.boxplot(x='uses_ad_boosts', y='rating', data=df)
+plt.title("Rating vs Ad Boost")
+plt.show()
+
+#Objective 3: Sales Performance
+top_products = df.sort_values(by='units_sold', ascending=False)[['title', 'units_sold']].head(10)
+print("\nTop 10 Selling Products:")
+print(top_products)
+
+top_themes = df.groupby('theme')['units_sold'].sum().sort_values(ascending=False)
+
+population_mean = 5000
+sample_mean = df['units_sold'].mean()
+sample_std = df['units_sold'].std()
+sample_size = len(df)
+
+# Z-test calculation
+z_score = (sample_mean - population_mean) / (sample_std / np.sqrt(sample_size))
+p_value = stats.norm.cdf(z_score)
+
+print(f"Z-Score: {z_score}")
+print(f"P-Value: {p_value}")
