@@ -1,0 +1,17 @@
+# Objective 8: Merchant Rating Distribution
+plt.figure(figsize=(8,5))
+sns.histplot(df['merchant_rating'], kde=True, bins=30, color='lightgreen')
+plt.title("Merchant Rating Distribution")
+plt.xlabel("Merchant Rating")
+plt.ylabel("Count")
+plt.show()
+
+group_with_picture = df[df['merchant_has_profile_picture'] == 1]['merchant_rating']
+group_without_picture = df[df['merchant_has_profile_picture'] == 0]['merchant_rating']
+
+# Performing T-test
+t_stat, p_value = stats.ttest_ind(group_with_picture, group_without_picture)
+
+print(f"T-statistic: {t_stat}")
+print(f"P-value: {p_value}")
+
