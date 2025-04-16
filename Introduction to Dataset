@@ -1,0 +1,52 @@
+# Women Fashion Dataset EDA 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+from scipy.stats import chi2_contingency
+
+# Set plot style
+sns.set(style="whitegrid")
+
+
+#Step 2: Load the Data
+df = pd.read_csv(r"C:\Users\prsrc\Desktop\Python Project\summer-products.csv")  # Make sure the file name is correct
+
+# Basic Overview
+print("Dataset Shape:", df.shape)
+print("\nInfo:")
+print(df.info())
+
+#Data Cleaning
+print("\nMissing Values:")
+print(df.isnull().sum())
+print("\nDuplicate Rows:", df.duplicated().sum())
+df['rating'] = df['rating'].fillna(df['rating'].mean())
+
+# Drop columns with too many missing values
+df = df.drop(columns=['merchant_profile_picture'], errors='ignore')
+
+# Converting data types if necessary
+df['price'] = pd.to_numeric(df['price'], errors='coerce')
+df['rating_count'] = pd.to_numeric(df['rating_count'], errors='coerce')
+
+df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
+print("Data cleaned and saved!")
+
+# Stats for selected numeric columns
+numeric_cols = ['price', 'retail_price', 'units_sold', 'rating', 'rating_count', 'merchant_rating']
+
+for col in numeric_cols:
+    if col in df.columns:
+        print(f"--- {col} ---")
+        print(f"Mean: {df[col].mean():.2f}")
+        print(f"Median: {df[col].median():.2f}")
+        print(f"Mode: {df[col].mode().values}")
+        print()
+
+
+valid_data = df[(df['price'].notnull()) & (df['units_sold'] > 0)]
+# Weighted mean price
+weighted_mean_price = (valid_data['price'] * valid_data['units_sold']).sum() / valid_data['units_sold'].sum()
+print("Weighted Mean Price (by Units Sold):", round(weighted_mean_price, 2))
